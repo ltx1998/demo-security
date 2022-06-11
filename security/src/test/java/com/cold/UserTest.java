@@ -25,7 +25,7 @@ public class UserTest {
     public void PasswordTest(){
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String root = passwordEncoder.encode("root");
-        System.out.println(passwordEncoder.matches("root", "$2a$10$pzwXCSg.4skIMhY1ZzoWhO5mQ44OU4qqAO9OQDfhU91r38Xi92.uO"));
+        System.out.println(passwordEncoder.matches("root", root));
         //System.out.println(root);
 
     }
