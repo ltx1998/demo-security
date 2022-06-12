@@ -1,10 +1,13 @@
 package com.cold.config;
 
 import com.cold.filter.JwtAuthenticationTokenFilter;
+import com.cold.handler.AccessDeniedHandlerImpl;
+import com.cold.handler.AuthenticationEntryPointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -14,13 +17,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 /**
  * @Author: LTX
- * @Date: 2022/6/11/0011
+ * @create:
  */
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+
+    @Autowired
+    private AuthenticationEntryPointImpl authenticationEntryPointl;
+
+    @Autowired
+    private AccessDeniedHandlerImpl accessDeniedHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -44,6 +54,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //把token校验过滤器添加到过滤器链中
         http
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        http
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPointl)
+                .accessDeniedHandler(accessDeniedHandler);
+        http.cors();
     }
 
     @Bean
